@@ -25,10 +25,56 @@
 
   </tbody>
 </table>
+<table border="1">
+<thead>
+    <tr>
+        <th>Název kategorie</th>
+        <th>Typ transakce (příjem / výdaj)</th>
+    </tr>
+</thead>
+<tbody id="tabulka_kategorie"></tbody>
+</table>
+<input id="nazev_kategorie" type="text">
+<select id="typ_transakce">
+    <option value="prijem">Příjem</option>
+    <option value="vydaj">Výdaj</option>
+</select>
+<button onclick="pridej_kategorii()">Přidat kategorii</button>
+
+<script src="tridy.js"></script>
 
 <script>
+
+   let kategorie = JSON.parse(localStorage.getItem("kategorie")) || [];
+
     let stav_uctu
     let tabulka_poslednich_10
+    let tabulka_kategorie
+    let nazev_kategorie
+    function pridej_kategorii(){
+        let nazev = document.getElementById("nazev_kategorie").value;
+        let typ_transakce = document.getElementById("typ_transakce").value;
+
+        kategorie.push(new Kategorie(nazev, typ_transakce));
+         let tk = document.getElementById("tabulka_kategorie");
+         tk.innerHTML = "";
+    for (let i = 0; i < kategorie.length; i++) {
+      let tr = document.createElement("tr");
+
+      let td1 = document.createElement("td");
+      td1.innerText = kategorie[i].nazev;
+
+      let td2 = document.createElement("td");
+      td2.innerText = kategorie[i].typ;
+      
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tk.appendChild(tr);
+      
+    }
+
+    }
+    
 </script>
 
 </body>
