@@ -7,5 +7,29 @@
 </head>
 <body>
     <h1>Aplikace pro domácí rozpočet</h1>
+    <h2>Dashboard</h2>
+    <p>Stav účtu: <span id="stav_uctu">0</span></p>
+
+<h3>Poslední transakce</h3>
+<table border="1">
+  <thead>
+    <tr>
+      <th>Popis</th>
+      <th>Částka</th>
+      <th>Kategorie</th>
+      <th>Typ</th>
+      <th>Akce</th>
+    </tr>
+  </thead>
+  <tbody id="tabulka_poslednich_10">
+
+  </tbody>
+</table>
+
+<script>
+    let stav_uctu
+    let tabulka_poslednich_10
+</script>
+
 </body>
 </html>
