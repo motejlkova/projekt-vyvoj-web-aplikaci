@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Domácí rozpočet</title>
 </head>
-<body>
-    <h1>Aplikace pro domácí rozpočet</h1>
-    <h2>Dashboard</h2>
+<body style="background-color: lightgreen; text-align:center;">
+    <h1><u>Aplikace pro domácí rozpočet</u></h1>
+    <h2>Přehled</h2>
     <p>Stav účtu: <span id="stav_uctu">0</span></p>
 
 <h3>Poslední transakce</h3>
-<table border="1">
+<table style="margin: 0 auto"; border="1">
   <thead>
     <tr>
       <th>Popis</th>
@@ -21,11 +21,11 @@
       <th>Akce</th>
     </tr>
   </thead>
-  <tbody id="tabulka_poslednich_10">
-
+  <tbody id="posledni_transakce">
   </tbody>
 </table>
-<table border="1">
+<p></p>
+<table style="margin: 0 auto"; border="1">
 <thead>
     <tr>
         <th>Název kategorie</th>
@@ -40,42 +40,101 @@
     <option value="vydaj">Výdaj</option>
 </select>
 <button onclick="pridej_kategorii()">Přidat kategorii</button>
+<p>
+Název položky<input id="nazev_polozky" type="text">
+Částka <input id="castka" type="text">
+<select id="kategorie_polozky"></select>
+<button onclick="pridej_polozku()">Přidat položku</button>
+</p>
+
+<br> <br>
+<button onclick="vymazani_localstorage()">Smazat localStorage</button>
+
 
 <script src="tridy.js"></script>
 
 <script>
+  let kategorie = JSON.parse(localStorage.getItem("kategorie")) || [];
+  let polozky = JSON.parse(localStorage.getItem("polozky")) || [];
 
-   let kategorie = JSON.parse(localStorage.getItem("kategorie")) || [];
+  function uloz() {
+    localStorage.setItem("kategorie", JSON.stringify(kategorie));
+    localStorage.setItem("polozky", JSON.stringify(polozky));
+  }
 
-    let stav_uctu
-    let tabulka_poslednich_10
-    let tabulka_kategorie
-    let nazev_kategorie
-    function pridej_kategorii(){
-        let nazev = document.getElementById("nazev_kategorie").value;
-        let typ_transakce = document.getElementById("typ_transakce").value;
-
-        kategorie.push(new Kategorie(nazev, typ_transakce));
-         let tk = document.getElementById("tabulka_kategorie");
-         tk.innerHTML = "";
+  function nacteni_kategorii() {
+    let tk = document.getElementById("tabulka_kategorie");
+    tk.innerHTML = "";
     for (let i = 0; i < kategorie.length; i++) {
       let tr = document.createElement("tr");
-
-      let td1 = document.createElement("td");
-      td1.innerText = kategorie[i].nazev;
-
-      let td2 = document.createElement("td");
-      td2.innerText = kategorie[i].typ;
-      
-      tr.appendChild(td1);
-      tr.appendChild(td2);
+      tr.innerHTML = `<td>${kategorie[i].nazev}</td><td>${kategorie[i].typ}</td>`;
       tk.appendChild(tr);
-      
     }
 
+    let sel = document.getElementById("kategorie_polozky");
+    sel.innerHTML = "";
+    for (let i = 0; i < kategorie.length; i++) {
+      sel.innerHTML += `<option value="${kategorie[i].nazev}">${kategorie[i].nazev}</option>`;
     }
-    
+  }
+
+function vykresli_polozky() {
+  let t = document.getElementById("posledni_transakce");
+  t.innerHTML = "";
+
+  for (let i = polozky.length - 1; i >= 0; i--) {
+    let p = polozky[i];
+    t.innerHTML +=
+      `<tr><td>${p.nazev}</td><td>${p.castka}</td><td>${p.kategorie}</td><td>${p.typ}</td>` +
+      `<td><button onclick="smaz_polozku(${i})">Smazat</button></td></tr>`;
+  }
+
+  let stav = 0;
+  for (let i = 0; i < polozky.length; i++) {
+    let c = Number(polozky[i].castka) || 0;
+    stav += (polozky[i].typ === "prijem") ? c : -c;
+  }
+  document.getElementById("stav_uctu").innerText = stav;
+}
+
+  function pridej_kategorii() {
+    let nazev = document.getElementById("nazev_kategorie").value;
+    let typ_transakce = document.getElementById("typ_transakce").value;
+
+    kategorie.push(new Kategorie(nazev, typ_transakce));
+    uloz();
+    nacteni_kategorii();
+  }
+
+function pridej_polozku() {
+  let nazev = document.getElementById("nazev_polozky").value;
+  let castka = document.getElementById("castka").value;
+  let kat = document.getElementById("kategorie_polozky").value || "";
+
+  let typ = (kategorie.find(k => k.nazev === kat) || {}).typ;  
+  polozky.push(new Polozka(nazev, castka, typ, kat));
+
+  uloz();
+  vykresli_polozky();
+}
+
+  function smaz_polozku(i) {
+    polozky.splice(i, 1);
+    uloz();
+    vykresli_polozky();
+  }
+
+  function vymazani_localstorage() {
+  localStorage.clear();
+  kategorie = [];
+  polozky = [];
+  nacteni_kategorii();
+  vykresli_polozky();
+}
+  nacteni_kategorii();
+  vykresli_polozky();
 </script>
+
 
 </body>
 </html>
