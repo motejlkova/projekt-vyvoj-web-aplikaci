@@ -5,18 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Domácí rozpočet</title>
 </head>
-<body style="background-color: lightgreen; text-align:center;">
-
+<body style="background-color: lightgreen;">
+<p>Výběr role
     <select id="role" onchange="zmen_roli()">
         <option value="uzivatel">Uživatel</option>
         <option value="admin">Správce rozpočtu</option>
     </select>
+    </p>
     <h1><u>Aplikace pro domácí rozpočet</u></h1>
     <h2>Přehled</h2>
     <p>Stav účtu: <span id="stav_uctu">0</span></p>
 
+<h3>Seznam kategorií</h3>
+
+<table border="1" cellpadding="8" cellspacing="0" bgcolor="white">
+<thead>
+    <tr>
+        <th>Název kategorie</th>
+        <th>Typ transakce (příjem / výdaj)</th>
+        <th>Akce</th>
+    </tr>
+</thead>
+<tbody id="tabulka_kategorie"></tbody>
+</table>
+
+<p> Název kategorie 
+<input id="nazev_kategorie" type="text">
+<select id="typ_transakce">
+    <option value="prijem">Příjem</option>
+    <option value="vydaj">Výdaj</option>
+</select>
+<button onclick="pridej_kategorii()">Přidat kategorii</button>
+</p>
+
 <h3>Poslední transakce</h3>
-<table style="margin: 0 auto"; border="1">
+<table border="1" cellpadding="8" cellspacing="0" bgcolor="white">
   <thead>
     <tr>
       <th>Popis</th>
@@ -30,24 +53,9 @@
   </tbody>
 </table>
 <p></p>
-<table style="margin: 0 auto"; border="1">
-<thead>
-    <tr>
-        <th>Název kategorie</th>
-        <th>Typ transakce (příjem / výdaj)</th>
-        <th>Akce</th>
-    </tr>
-</thead>
-<tbody id="tabulka_kategorie"></tbody>
-</table>
 
-<br />
-<input id="nazev_kategorie" type="text">
-<select id="typ_transakce">
-    <option value="prijem">Příjem</option>
-    <option value="vydaj">Výdaj</option>
-</select>
-<button onclick="pridej_kategorii()">Přidat kategorii</button>
+
+
 <p>
 Název položky<input id="nazev_polozky" type="text">
 Částka <input id="castka" type="text">
