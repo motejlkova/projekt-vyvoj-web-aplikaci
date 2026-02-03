@@ -9,7 +9,7 @@
 <p>Výběr role
     <select id="role" onchange="zmen_roli()">
         <option value="uzivatel">Uživatel</option>
-        <option value="admin">Správce rozpočtu</option>
+        <option value="spravce">Správce rozpočtu</option>
     </select>
     </p>
     <h1><u>Aplikace pro domácí rozpočet</u></h1>
@@ -61,7 +61,7 @@ Název položky <input id="nazev_polozky" type="text">
 </p>
 
 <br> <br>
-<div class="admin"> 
+<div class="spravce"> 
 <button onclick="vymazani_localstorage()">Smazat localStorage</button>
 </div>
 
@@ -82,7 +82,7 @@ Název položky <input id="nazev_polozky" type="text">
     tk.innerHTML = "";
     for (let i = 0; i < kategorie.length; i++) {
       let tr = document.createElement("tr");
-       tr.innerHTML = `<td>${kategorie[i].nazev}</td><td>${kategorie[i].typ}</td><td><div class="admin"><button onclick="smaz_kategorii(${i})">Smazat</div></button></td>`;
+       tr.innerHTML = `<td>${kategorie[i].nazev}</td><td>${kategorie[i].typ}</td><td><div class="spravce"><button onclick="smaz_kategorii(${i})">Smazat</div></button></td>`;
       tk.appendChild(tr);
     }
 
@@ -128,6 +128,8 @@ function pridej_polozku() {
   let kat = document.getElementById("kategorie_polozky").value || "";
   
   if (kat === "") { alert("Vyberte kategorii"); return; }
+  if (castka === "") { alert("Zadejte částku"); return; }
+  if (nazev === "") { alert("Zadejte název"); return; }
 
   let typ = (kategorie.find(k => k.nazev === kat) || {}).typ;  
   polozky.push(new Polozka(nazev, castka, typ, kat));
@@ -168,8 +170,8 @@ function zmen_roli() {
 }
 
 function nastav_opravneni() {
-  document.querySelectorAll(".admin")
-    .forEach(e => e.style.display = (role === "admin") ? "block" : "none");
+  document.querySelectorAll(".spravce")
+    .forEach(e => e.style.display = (role === "spravce") ? "block" : "none");
 }
 
 nastav_opravneni();
