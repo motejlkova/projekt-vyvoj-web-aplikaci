@@ -8,114 +8,132 @@ class AplikaceRozpocet {
   this.getElement_tabulka_kategorie = document.getElementById("tabulka_kategorie");
   this.getElement_kategorie_polozky = document.getElementById("kategorie_polozky");
   this.getElement_posledni_transakce = document.getElementById("posledni_transakce");
-  this.getElement_stav_uctu = document.getElementById("stav_uctu").innerText = stav;
-  this.getElement_nazev_kategorie = document.getElementById("nazev_kategorie").value;
-  this.getElement_typ_transakce = document.getElementById("typ_transakce").value
-  this.getElement_nazev_polozky = document.getElementById("nazev_polozky").value;
-  this.getElement_castka = document.getElementById("castka").value;
-  this.getElement_kategorie_polozky = document.getElementById("kategorie_polozky").value || "";
-
-
-  function uloz() {
-    localStorage.setItem("kategorie", JSON.stringify(kategorie));
-    localStorage.setItem("polozky", JSON.stringify(polozky));
+  this.getElement_stav_uctu = document.getElementById("stav_uctu");
+  this.getElement_nazev_kategorie = document.getElementById("nazev_kategorie");
+  this.getElement_typ_transakce = document.getElementById("typ_transakce")
+  this.getElement_nazev_polozky = document.getElementById("nazev_polozky");
+  this.getElement_castka = document.getElementById("castka");
+  this.getElement_kategorie_polozky = document.getElementById("kategorie_polozky");
+  this.getElement_role = document.getElementById("role");
   }
 
-  function nacteni_kategorii() {
-    //let tk = document.getElementById("tabulka_kategorie");
-    tk.innerHTML = "";
-    for (let i = 0; i < kategorie.length; i++) {
+  inicializace() {
+      this.nacteni_kategorii();
+      this.vykresli_polozky();
+      this.getElement_role.value = this.role;
+      this.nastav_opravneni();
+  }
+
+  uloz() {
+    localStorage.setItem("kategorie", JSON.stringify(this.kategorie));
+    localStorage.setItem("polozky", JSON.stringify(this.polozky));
+  }
+
+  nacteni_kategorii() {
+    this.getElement_tabulka_kategorie.innerHTML = "";
+    for (let i = 0; i < this.kategorie.length; i++) {
       let tr = document.createElement("tr");
-       tr.innerHTML = `<td>${kategorie[i].nazev}</td><td>${kategorie[i].typ}</td><td><div class="spravce"><button onclick="smaz_kategorii(${i})">Smazat</div></button></td>`;
-      tk.appendChild(tr);
+       tr.innerHTML = `<td>${this.kategorie[i].nazev}</td><td>${this.kategorie[i].typ}</td><td><div class="spravce"><button onclick="smaz_kategorii(${i})">Smazat</div></button></td>`;
+      this.getElement_tabulka_kategorie.appendChild(tr);
     }
 
-    //let sel = document.getElementById("kategorie_polozky");
-    sel.innerHTML = "";
-    for (let i = 0; i < kategorie.length; i++) {
-      sel.innerHTML += `<option value="${kategorie[i].nazev}">${kategorie[i].nazev}</option>`;
+    this.getElement_kategorie_polozky.innerHTML = "";
+    for (let i = 0; i < this.kategorie.length; i++) {
+      this.getElement_kategorie_polozky.innerHTML += `<option value="${this.kategorie[i].nazev}">${this.kategorie[i].nazev}</option>`;
     }
   }
 
-function vykresli_polozky() {
- // let t = document.getElementById("posledni_transakce");
-  t.innerHTML = "";
+vykresli_polozky() {
+  this.getElement_posledni_transakce.innerHTML = "";
 
-  for (let i = polozky.length - 1; i >= 0; i--) {
-    let p = polozky[i];
-    t.innerHTML +=
+  for (let i = this.polozky.length - 1; i >= 0; i--) {
+    let p = this.polozky[i];
+    this.getElement_posledni_transakce.innerHTML +=
       `<tr><td>${p.nazev}</td><td>${p.castka}</td><td>${p.kategorie}</td><td>${p.typ}</td>` +
       `<td><button onclick="smaz_polozku(${i})">Smazat</button></td></tr>`;
   }
 
   let stav = 0;
-  for (let i = 0; i < polozky.length; i++) {
-    let c = Number(polozky[i].castka) || 0;
-    stav += (polozky[i].typ === "prijem") ? c : -c;
+  for (let i = 0; i < this.polozky.length; i++) {
+    let c = Number(this.polozky[i].castka) || 0;
+    stav += (this.polozky[i].typ === "prijem") ? c : -c;
   }
-  //document.getElementById("stav_uctu").innerText = stav;
+  this.getElement_stav_uctu.innerText = stav;
 }
 
-  function pridej_kategorii() {
-    //let nazev = document.getElementById("nazev_kategorie").value;
-    //let typ_transakce = document.getElementById("typ_transakce").value;
-    if (nazev === "") { alert("Zadejte název kategorie"); return; }
+  pridej_kategorii() {
+    if (this.getElement_nazev_kategorie.value === "") { alert("Zadejte název kategorie"); return; }
 
-    kategorie.push(new Kategorie(nazev, typ_transakce));
-    uloz();
-    nacteni_kategorii();
+    this.kategorie.push(new Kategorie(this.getElement_nazev_kategorie.value,  this.getElement_typ_transakce.value ));
+    this.uloz();
+    this.nacteni_kategorii();
   }
 
-function pridej_polozku() {
- // let nazev = document.getElementById("nazev_polozky").value;
- // let castka = document.getElementById("castka").value;
- // let kat = document.getElementById("kategorie_polozky").value || "";
-  
-  if (kat === "") { alert("Vyberte kategorii"); return; }
-  if (castka === "") { alert("Zadejte částku"); return; }
-  if (nazev === "") { alert("Zadejte název"); return; }
+pridej_polozku() {
+  let kat = this.getElement_kategorie_polozky.value || "";
+  if (this.getElement_kategorie_polozky.value  === "") { alert("Vyberte kategorii"); return; }
+  if (this.getElement_castka.value === "") { alert("Zadejte částku"); return; }
+  if (this.getElement_nazev_polozky.value === "") { alert("Zadejte název"); return; }
 
-  let typ = (kategorie.find(k => k.nazev === kat) || {}).typ;  
-  polozky.push(new Polozka(nazev, castka, typ, kat));
+  let typ = (this.kategorie.find(k => k.nazev === kat) || {}).typ;  
+  this.polozky.push(new Polozka(this.getElement_nazev_polozky.value, this.getElement_castka.value, typ, this.getElement_kategorie_polozky.value));
 
-  uloz();
-  vykresli_polozky();
+  this.uloz();
+  this.vykresli_polozky();
 }
 
-  function smaz_polozku(i) {
-    polozky.splice(i, 1);
-    uloz();
-    vykresli_polozky();
+smaz_polozku(i) {
+    this.polozky.splice(i, 1);
+    this.uloz();
+    this.vykresli_polozky();
   }
 
-  function smaz_kategorii(i) {
-  kategorie.splice(i, 1);
-  uloz();
-  nacteni_kategorii();
+  smaz_kategorii(i) {
+  this.kategorie.splice(i, 1);
+  this.uloz();
+  this.nacteni_kategorii();
 }
 
-  function vymazani_localstorage() {
+vymazani_localstorage() {
   localStorage.clear();
-  kategorie = [];
-  polozky = [];
-  nacteni_kategorii();
-  vykresli_polozky();
-}
-  nacteni_kategorii();
-  vykresli_polozky();
-
-  
-  document.getElementById("role").value = role;
-
-function zmen_roli() {
-  role = document.getElementById("role").value;
-  localStorage.setItem("role", role);
-  nastav_opravneni();
+  this.kategorie = [];
+  this.polozky = [];
+  this.nacteni_kategorii();
+  this.vykresli_polozky();
 }
 
-function nastav_opravneni() {
+zmen_roli() {
+  this.role = document.getElementById("role").value;
+  localStorage.setItem("role", this.role);
+  this.nastav_opravneni();
+}
+
+nastav_opravneni() {
   document.querySelectorAll(".spravce")
-    .forEach(e => e.style.display = (role === "spravce") ? "block" : "none");
+    .forEach(e => e.style.display = (this.role === "spravce") ? "block" : "none");
 }
 
-nastav_opravneni();
+}
+
+function smaz_kategorii(i) { 
+  aplikace.smaz_kategorii(i); 
+}
+function smaz_polozku(i) { 
+  aplikace.smaz_polozku(i); 
+}
+function pridej_kategorii() { 
+  aplikace.pridej_kategorii(); 
+}
+function pridej_polozku() { 
+  aplikace.pridej_polozku(); 
+}
+function vymazani_localstorage() { 
+  aplikace.vymazani_localstorage(); 
+}
+function zmen_roli() { 
+  aplikace.zmen_roli(); 
+}
+
+let aplikace = new AplikaceRozpocet();
+
+aplikace.inicializace();
